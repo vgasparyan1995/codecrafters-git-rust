@@ -1,21 +1,26 @@
-#[allow(unused_imports)]
-use std::env;
-#[allow(unused_imports)]
+use clap::{Parser, Subcommand};
 use std::fs;
 
-fn main() {
-    // You can use print statements as follows for debugging, they'll be visible when running tests.
-    println!("Logs from your program will appear here!");
+#[derive(Parser)]
+#[command(about)]
+struct Cli {
+    #[command(subcommand)]
+    command: Command,
+}
 
-    // Uncomment this block to pass the first stage
-    // let args: Vec<String> = env::args().collect();
-    // if args[1] == "init" {
-    //     fs::create_dir(".git").unwrap();
-    //     fs::create_dir(".git/objects").unwrap();
-    //     fs::create_dir(".git/refs").unwrap();
-    //     fs::write(".git/HEAD", "ref: refs/heads/main\n").unwrap();
-    //     println!("Initialized git directory")
-    // } else {
-    //     println!("unknown command: {}", args[1])
-    // }
+#[derive(Subcommand)]
+enum Command {
+    Init,
+}
+
+fn main() {
+    let cli = Cli::parse();
+    match cli.command {
+        Command::Init => {
+            fs::create_dir(".git").unwrap();
+            fs::create_dir(".git/objects").unwrap();
+            fs::create_dir(".git/refs").unwrap();
+            fs::write(".git/HEAD", "ref: refs/heads/main\n").unwrap();
+        }
+    };
 }
